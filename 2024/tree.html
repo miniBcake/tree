@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        /* 기본 페이지 레이아웃 */
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Arial', sans-serif;
+        }
+
+        /* 트리 컨테이너 */
+        .tree-container {
+            position: relative;
+            width: 400px;
+            height: 500px;
+        }
+
+        /* 별 장식 */
+        .star {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 50px;
+            background: #FFE5B4;
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+            animation: starTwinkle 1.5s infinite ease-in-out;
+            z-index: 3;
+            filter: drop-shadow(0 0 10px rgba(255, 229, 180, 0.8));
+        }
+
+        @keyframes starTwinkle {
+            0%, 100% { opacity: 1; transform: translateX(-50%) scale(1); }
+            50% { opacity: 0.7; transform: translateX(-50%) scale(0.9); }
+        }
+
+        /* 트리 본체 */
+        .tree {
+            position: absolute;
+            top: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 180px solid transparent;
+            border-right: 180px solid transparent;
+            border-bottom: 360px solid #98C788;
+            z-index: 1;
+        }
+
+        .tree::before {
+            content: '';
+            position: absolute;
+            top: 80px;
+            left: -140px;
+            width: 0;
+            height: 0;
+            border-left: 140px solid transparent;
+            border-right: 140px solid transparent;
+            border-bottom: 280px solid #A8D39B;
+        }
+
+        .tree::after {
+            content: '';
+            position: absolute;
+            top: 160px;
+            left: -100px;
+            width: 0;
+            height: 0;
+            border-left: 100px solid transparent;
+            border-right: 100px solid transparent;
+            border-bottom: 200px solid #B9DEAE;
+        }
+
+        /* 큰 전구 스타일 */
+        .ornament {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            animation: ornamentTwinkle 2s infinite ease-in-out;
+            z-index: 3;
+            transform: translate(-50%, -50%);
+            background: #FF4D4D;
+            box-shadow: 0 0 15px rgba(255, 77, 77, 0.6);
+        }
+
+        /* 작은 전구 스타일 */
+        .light {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: lightTwinkle 1s infinite alternate;
+            z-index: 2;
+            transform: translate(-50%, -50%);
+        }
+
+        @keyframes ornamentTwinkle {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); filter: brightness(1); }
+            50% { transform: translate(-50%, -50%) scale(1.1); filter: brightness(1.2); }
+        }
+
+        @keyframes lightTwinkle {
+            from { opacity: 0.6; }
+            to { opacity: 1; }
+        }
+
+        .message {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #7A9B76;
+            font-size: 24px;
+            text-align: center;
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="tree-container">
+        <div class="star"></div>
+        <div class="tree"></div>
+        <div class="message">Merry Christmas! 🎄</div>
+    </div>
+
+    <script>
+        const treeContainer = document.querySelector('.tree-container');
+
+        // 파스텔톤 색상 정의
+        const colors = {
+            pink: '#FFB3BA',
+            mint: '#BAFFC9',
+            skyBlue: '#BAE1FF',
+            yellow: '#FFFFBA',
+            rose: '#F4C2C2',
+            purple: '#E8C2F4'
+        };
+
+        // 큰 전구 위치 
+        const ornamentPositions = [
+            // 1단
+            { x: 200, y: 100 },
+            // 2단
+            { x: 170, y: 150 },
+            { x: 230, y: 150 },
+            // 3단
+            { x: 140, y: 200 },
+            { x: 200, y: 200 },
+            { x: 260, y: 200 },
+            // 4단
+            { x: 110, y: 260 },
+            { x: 170, y: 260 },
+            { x: 230, y: 260 },
+            { x: 290, y: 260 },
+            // 5단
+            { x: 85, y: 320 },
+            { x: 145, y: 320 },
+            { x: 205, y: 320 },
+            { x: 260, y: 320 },
+            { x: 315, y: 320 },
+            // 6단
+            { x: 60, y: 380 },
+            { x: 110, y: 380 },
+            { x: 170, y: 380 },
+            { x: 225, y: 380 },
+            { x: 280, y: 380 },
+            { x: 337, y: 380 }
+        ];
+
+        // 작은 전구 위치
+        const lightPositions = [
+            // 1단
+            { x: 200, y: 80 },
+            // 2단
+            { x: 180, y: 130 },
+            { x: 220, y: 130 },
+            // 3단
+            { x: 160, y: 180 },
+            { x: 200, y: 180 },
+            { x: 240, y: 180 },
+            // 4단
+            { x: 140, y: 230 },
+            { x: 180, y: 230 },
+            { x: 220, y: 230 },
+            { x: 260, y: 230 },
+            // 5단
+            { x: 100, y: 300 },
+            { x: 150, y: 300 },
+            { x: 200, y: 300 },
+            { x: 250, y: 300 },
+            { x: 300, y: 300 },
+            // 6단
+            { x: 70, y: 360 },
+            { x: 120, y: 360 },
+            { x: 180, y: 360 },
+            { x: 230, y: 360 },
+            { x: 270, y: 360 },
+            { x: 320, y: 360 }
+        ];
+
+        // 장식 생성 함수
+        function createDecoration(type, position) {
+            const decoration = document.createElement('div');
+            decoration.className = type;
+            decoration.style.left = `${position.x}px`;
+            decoration.style.top = `${position.y}px`;
+            
+            if (type === 'light') {
+                const randomColor = Object.values(colors)[
+                    Math.floor(Math.random() * Object.keys(colors).length)
+                ];
+                decoration.style.backgroundColor = randomColor;
+                decoration.style.boxShadow = `0 0 5px ${randomColor}`;
+            }
+            
+            decoration.style.animationDelay = `${Math.random() * 2}s`;
+            return decoration;
+        }
+
+        // 장식 배치
+        ornamentPositions.forEach(position => {
+            treeContainer.appendChild(createDecoration('ornament', position));
+        });
+        
+        lightPositions.forEach(position => {
+            treeContainer.appendChild(createDecoration('light', position));
+        });
+    </script>
+</body>
+</html>
